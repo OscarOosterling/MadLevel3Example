@@ -32,6 +32,7 @@ class RemindersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        observeAddReminderResult()
 
     }
 
@@ -40,6 +41,16 @@ class RemindersFragment : Fragment() {
         rvReminders.adapter = reminderAdapter
         rvReminders.addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
     }
+    private fun observeAddReminderResult() {
+        setFragmentResultListener(REQ_REMINDER_KEY) { key, bundle ->
+            bundle.getString(BUNDLE_REMINDER_KEY)?.let {
+                val reminder = Reminder(it)
 
+                reminders.add(reminder)
+                reminderAdapter.notifyDataSetChanged()
+            } ?: Log.e("ReminderFragment", "Request triggered, but empty reminder text!")
+
+        }
+    }
 
 }
